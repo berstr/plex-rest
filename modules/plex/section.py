@@ -144,39 +144,3 @@ class PlexSection:
 
 
 
-
-
-
-'''
-
-import config
-
-
-def sections():
-    return config.PLEX.library.sections()
-
-def section_names():
-    result = []
-    for section in config.PLEX.library.sections():
-        result.append(section.title)
-    return result
-
-def by_uuid(uuid: str):
-    result = None
-    for section in sections():
-        if (section.uuid == uuid):
-            result = section
-            break
-    return result
-
-
-def by_name(name: str):
-    result = None
-    for section in sections():
-        if (section.title == name):
-            result = section
-            break
-    return result
-
-
-'''

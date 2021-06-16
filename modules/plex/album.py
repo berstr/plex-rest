@@ -51,7 +51,6 @@ class PlexAlbum:
         self.key = self.album.key
         self.details = details
         self.genres = []
-        #print(album.genres)
         for g in album.genres:
             self.genres.append(g.tag)
 
@@ -80,6 +79,36 @@ class PlexAlbum:
         self.album.reload()
         self.originallyAvailableAt = new_date
         self.year = new_date[:4]
+        return self.json()
+
+
+    # genres:  string - list of comma separated genres, e.g. "Pop , Rock , Blues"
+    def genres_add(self, genres):
+        genres_a = [x.strip() for x in genres.split(',')]
+        for genre in genres_a:
+            if (len(genre) > 0) and ((genre in self.genres) == False):
+                # for multiple tags at once, you could also say:
+                # originallyAvailableAt.locked=1 , genre.locked=1 , genre[0].tag.tag=Pop , genre[1].tag.tag=Rock , genre[2].tag.tag=Blues
+                query = {'genre[0].tag.tag': genre, 'genre[0].tag.tag.locked': 1}
+                self.album.edit(**query)
+                self.album.reload()
+                self.genres.append(genre)
+        return self.json()
+
+
+    # genres:  string - list of comma separated genres, e.g. "Pop , Rock , Blues"
+    def genres_replace(self, genres):
+        self.genres_delete()
+        self.genres_add(genres)
+        return self.json()
+
+    def genres_delete(self):
+        if len(self.genres) > 0:
+            genres_string = ",".join(self.genres)
+            query = {'genre[].tag.tag-': genres_string}
+            self.album.edit(**query)
+            self.album.reload()
+            self.genres = []
         return self.json()
 
     # album:     plexapi.audio.Album

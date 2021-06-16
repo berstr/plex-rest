@@ -93,3 +93,78 @@ def set_artist(section_name, album_key, artist):
                 result = {'result':'ok','album': album.json() }
     result = {**result , **{'section_name':section_name, 'key':album_key,'artist': artist}}
     return result        
+
+def genres_add(section_name, album_key, genres):
+    print("rest.album.genres_add() - START")
+    result = None
+    if (section_name == None):
+        result = {'result':'error - section name not defined'}
+    elif (album_key == None):
+        result = {'result':'error - album key not defined'}
+    elif (genres == None):
+        result = {'result':'error - new genres not defined'}
+    else:
+        section = plex_section.get_by_name(section_name)
+        if section == None:
+            result = {'result':'error - cannot find section with name: %s' % (section_name)}
+        else:
+            album_fetch = section.fetchItem(album_key)
+            if album_fetch == None:
+                result = {'result':'error - cannot find album with key: %s' % (album_key)}
+            elif album_fetch['result'] != 'ok': 
+                result = album_fetch
+            else:
+                album = album_fetch['item']
+                print("rest.album.genres_add() - call album.genres_add(%s)" % (genres))
+                album.genres_add(genres)
+                result = {'result':'ok','album': album.json() }
+    result = {**result , **{'section_name':section_name, 'key':album_key,'genres': genres}}
+    return result       
+
+def genres_delete(section_name, album_key):
+    result = None
+    if (section_name == None):
+        result = {'result':'error - section name not defined'}
+    elif (album_key == None):
+        result = {'result':'error - album key not defined'}
+    else:
+        section = plex_section.get_by_name(section_name)
+        if section == None:
+            result = {'result':'error - cannot find section with name: %s' % (section_name)}
+        else:
+            album_fetch = section.fetchItem(album_key)
+            if album_fetch == None:
+                result = {'result':'error - cannot find album with key: %s' % (album_key)}
+            elif album_fetch['result'] != 'ok': 
+                result = album_fetch
+            else:
+                album = album_fetch['item']
+                album.genres_delete()
+                result = {'result':'ok','album': album.json() }
+    result = {**result , **{'section_name':section_name, 'key':album_key}}
+    return result       
+
+def genres_replace(section_name, album_key, genres):
+    result = None
+    if (section_name == None):
+        result = {'result':'error - section name not defined'}
+    elif (album_key == None):
+        result = {'result':'error - album key not defined'}
+    elif (genres == None):
+        result = {'result':'error - new genres not defined'}
+    else:
+        section = plex_section.get_by_name(section_name)
+        if section == None:
+            result = {'result':'error - cannot find section with name: %s' % (section_name)}
+        else:
+            album_fetch = section.fetchItem(album_key)
+            if album_fetch == None:
+                result = {'result':'error - cannot find album with key: %s' % (album_key)}
+            elif album_fetch['result'] != 'ok': 
+                result = album_fetch
+            else:
+                album = album_fetch['item']
+                album.genres_replace(genres)
+                result = {'result':'ok','album': album.json() }
+    result = {**result , **{'section_name':section_name, 'key':album_key,'genres': genres}}
+    return result           

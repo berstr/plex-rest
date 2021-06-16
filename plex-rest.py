@@ -94,6 +94,82 @@ def genres():
     config.LOGGER.info("GET /genres - result: %s" % (result['result']))
     return jsonify(result)
 
+@config.APP.route('/genres/add', methods=['PUT'])
+def genres_add():
+    try:
+        body = request.get_json()
+        section_name = body.get('section')
+        item_key = body.get('key')
+        genres = body.get('genres')
+        config.LOGGER.info("PUT /genres/add - section_name: %s - item_key: %s - genres: %s" % (section_name, item_key, genres))
+        section_type = rest_section.section_type(section_name)
+        if section_type['result'] == 'ok':
+            if section_type['type'] == 'MusicSection':
+                result = rest_album.genres_add(section_name, item_key, genres)
+            elif section_type['type'] == 'MovieSection':
+                result = rest_video.genres_add(section_name, item_key, genres)
+            else:
+                result = {'result':'library section type [%s] not supported' % (section_type)}
+        else:
+            result = section_type
+    except: # catch *all* exceptions
+        exception_type = str(sys.exc_info()[0])
+        exception_value = str(sys.exc_info()[1])
+        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':item_key, 'genres': genres }
+        config.LOGGER.exception(result)
+    config.LOGGER.info("PUT /genres/add - result: %s" % (result['result']))
+    return jsonify(result)
+
+@config.APP.route('/genres/replace', methods=['PUT'])
+def genres_replace():
+    try:
+        body = request.get_json()
+        section_name = body.get('section')
+        item_key = body.get('key')
+        genres = body.get('genres')
+        config.LOGGER.info("PUT /genres/replace - section_name: %s - item_key: %s - genres: %s" % (section_name, item_key, genres))
+        section_type = rest_section.section_type(section_name)
+        if section_type['result'] == 'ok':
+            if section_type['type'] == 'MusicSection':
+                result = rest_album.genres_replace(section_name, item_key, genres)
+            elif section_type['type'] == 'MovieSection':
+                result = rest_video.genres_replace(section_name, item_key, genres)
+            else:
+                result = {'result':'library section type [%s] not supported' % (section_type)}
+        else:
+            result = section_type
+    except: # catch *all* exceptions
+        exception_type = str(sys.exc_info()[0])
+        exception_value = str(sys.exc_info()[1])
+        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':item_key, 'genres': genres }
+        config.LOGGER.exception(result)
+    config.LOGGER.info("PUT /genres/replace - result: %s" % (result['result']))
+    return jsonify(result)
+
+@config.APP.route('/genres/delete', methods=['PUT'])
+def genres_delete():
+    try:
+        body = request.get_json()
+        section_name = body.get('section')
+        item_key = body.get('key')
+        config.LOGGER.info("PUT /genres/delete - section_name: %s - item_key: %s" % (section_name, item_key))
+        section_type = rest_section.section_type(section_name)
+        if section_type['result'] == 'ok':
+            if section_type['type'] == 'MusicSection':
+                result = rest_album.genres_delete(section_name, item_key)
+            elif section_type['type'] == 'MovieSection':
+                result = rest_video.genres_delete(section_name, item_key)
+            else:
+                result = {'result':'library section type [%s] not supported' % (section_type)}
+        else:
+            result = section_type
+    except: # catch *all* exceptions
+        exception_type = str(sys.exc_info()[0])
+        exception_value = str(sys.exc_info()[1])
+        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':item_key }
+        config.LOGGER.exception(result)
+    config.LOGGER.info("PUT /genres/delete - result: %s" % (result['result']))
+    return jsonify(result)
 
 # updates the title, sort and original title of music albums and videos
 @config.APP.route('/title', methods=['PUT'])
@@ -117,7 +193,7 @@ def set_title():
     except: # catch *all* exceptions
         exception_type = str(sys.exc_info()[0])
         exception_value = str(sys.exc_info()[1])
-        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':album_key, 'title': title }
+        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':item_key, 'title': title }
         config.LOGGER.exception(result)
     
     config.LOGGER.info("PUT /title - result: %s" % (result['result']))
@@ -146,7 +222,7 @@ def set_artist():
     except: # catch *all* exceptions
         exception_type = str(sys.exc_info()[0])
         exception_value = str(sys.exc_info()[1])
-        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':album_key, 'title': title }
+        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'key':item_key, 'title': title }
         config.LOGGER.exception(result)
     config.LOGGER.info("PUT /title - result: %s" % (result['result']))
     return jsonify(result)
