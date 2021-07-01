@@ -14,7 +14,6 @@ from modules.rest import recently_added as rest_recently_added
 
 import config
 
-
 config.init()
 
 config.LOGGER.info("STARTUP SERVICE")
@@ -24,7 +23,7 @@ config.LOGGER.info("SYNOLOGY_FILESTATION_SERVICE: %s" % (config.SYNOLOGY_FILESTA
 
 @config.APP.route('/health')
 def health():
-    return rest_health.heath(request)
+    return rest_health.health(request)
 
 @config.APP.route('/section/uuid')
 def section_uuid():

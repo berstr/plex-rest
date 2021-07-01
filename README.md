@@ -9,18 +9,12 @@ This service is using the Python Plex API:
 ## Env Variables
 
     export NEW_RELIC_LICENSE_KEY=XXXX
-    export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
-    export NEW_RELIC_APP_NAME="plex-rest"
+    export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=XXX
+    export NEW_RELIC_APP_NAME=XXXX
 
     export PLEX_USERNAME=XXXX
     export PLEX_PASSWORD=XXXX
     export PLEX_SERVERNAME=XXXX
-
-SYNOLOGY_FILESTATION_SERVICE is the hostname (IP address) and port number where the synology-filestation runs
-Example: <host IP>:<Port>
-Default: 'localhost:37082'
-
-    export SYNOLOGY_FILESTATION_SERVICE=XXXX
 
 ----------------
 
