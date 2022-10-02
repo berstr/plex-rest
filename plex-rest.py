@@ -17,7 +17,9 @@ import config
 
 config.init()
 
-plex_section.init('Music Carolin')
+config.LOGGER.info("init MusicTest")
+
+plex_section.init(['MusicTest'])
 
 config.LOGGER.info("STARTUP SERVICE")
 
