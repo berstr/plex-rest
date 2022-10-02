@@ -31,7 +31,8 @@ def items(section_name, details):
         if section == None:
             result = {'result':'error - section cannot be found', 'section':section_name, 'details':details}
         else:
-            result = section.items(details)
+            config.LOGGER.info("rest.section: %s" % (section))
+            result = section.songs
             # if details are requested, the result will contain PlexAlbum or PlexVideo objects
             # these must be first converted into JSON before sending a HTTP reply
             if details == 'yes':
@@ -52,24 +53,24 @@ def names():
 def scan(section_name):
     result = None
     if (section_name == None):
-        result = {'result':'error - section name not set','section':section_name}
+        result = {'result':'error - parameter [section_name] not set'}
     else:
         section = plex_section.get_by_name(section_name)
         if section == None:
-            result = {'result':'error - section cannot be found', 'section':section_name}
+            result = {'result':'error - section cannot be found', 'section_name':section_name}
         else:
             result = section.scan()
     return result
 
 def section_type(section_name):
     if (section_name == None):
-        result = {'result':'error - section name not set','section':section_name}
+        result = {'result':'error - parameter [section_name] not set'}
     else:
         section = plex_section.get_by_name(section_name)
         if section == None:
-            result = {'result':'error - section cannot be found', 'section':section_name}
+            result = {'result':'error - section cannot be found', 'section_name':section_name}
         else:
-            result = {'result':'ok', 'section':section_name, 'type': section.type }
+            result = {'result':'ok', 'section_name':section_name, 'type': section.type }
     config.LOGGER.info("rest.section.section_type() - result %s" % (result))
     return result
 
@@ -77,7 +78,7 @@ def section_type(section_name):
 def get_by_name(name):
     result = None
     if (name == None):
-        result = {'result':'error - section name not set'}
+        result = {'result':'error - parameter [section_name] not set'}
     else:
         section = plex_section.get_by_name(name)
         if (section != None):

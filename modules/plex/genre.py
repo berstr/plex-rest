@@ -11,21 +11,18 @@ def genres(section_name):
         result = {'result':'error - section with name %s not found' % (section_name), 'section': section_name}
     return result
 
+#from modules.plex import section as plex_section
 
-'''
-# result: { string : <plexapi.media.Genre> }
-def genres(section_name):
-    result = {}
-    section = plex_section.get_by_name(section_name)
-    if section != None:
-        result = plex_section.genres()
-    else:
-        result = {'result':'error - section with name %s not found' % (section_name), 'name': section_name}
-        #alben = plex_album.albums(section)
-        # for album in alben:
-        #    for genre in album.genres:
-        #        if genre not in result:
-        #            result[genre.tag] = genre
-    return result
 
-'''
+class PlexGenre:
+
+    # genre:    plexapi.media.Genre
+    def __init__(self, genre):
+        self.plex_genre = genre
+        self.genre = genre.tag
+        self.key = genre.key
+
+    def json(self):
+        return {'genre':self.genre,'key':self.key }
+    
+

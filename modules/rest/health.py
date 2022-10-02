@@ -3,5 +3,5 @@ import config
 
 def health(request):
     config.LOGGER.info("GET /health")
-    result = { 'result' : 'ok' }
+    result = { 'result' : 'ok' , 'service' : 'plex rest'}
     return jsonify(result)

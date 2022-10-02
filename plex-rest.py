@@ -11,10 +11,13 @@ from modules.rest import album as rest_album
 from modules.rest import video as rest_video
 from modules.rest import genre as rest_genre
 from modules.rest import recently_added as rest_recently_added
+from modules.plex import section as plex_section
 
 import config
 
 config.init()
+
+plex_section.init('Music Carolin')
 
 config.LOGGER.info("STARTUP SERVICE")
 
@@ -76,10 +79,10 @@ def scan():
 
 @config.APP.route('/recently_added')
 def recently_added():
-    name = request.args.get('name')
+    name = request.args.get('section_name')
     limit = request.args.get('limit')
     details = request.args.get('details')
-    config.LOGGER.info("GET /recently_added - section: %s - details: %s - limit: %s" % (name, details,limit))
+    config.LOGGER.info("GET /recently_added - section_name: %s - details: %s - limit: %s" % (name, details,limit))
     result = rest_recently_added.get(name, details, limit)
     config.LOGGER.info("GET /recently_added - result: %s" % (result['result']))
     return jsonify(result)
@@ -169,6 +172,24 @@ def genres_delete():
         config.LOGGER.exception(result)
     config.LOGGER.info("PUT /genres/delete - result: %s" % (result['result']))
     return jsonify(result)
+
+
+@config.APP.route('/search/artist', methods=['GET'])
+def search_artist():
+    try:
+        body = request.get_json()
+        section_name = body.get('section')
+        artist_name = body.get('name')
+        config.LOGGER.info("GET /search/artist - section_name: %s - name: %s" % (section_name, artist_name ))
+        result = rest_search.artist(section_name, artist_name)
+    except: # catch *all* exceptions
+        exception_type = str(sys.exc_info()[0])
+        exception_value = str(sys.exc_info()[1])
+        result = {'result':'plex exception: %s' % (exception_type), 'exception-type':exception_type, 'exception_value':exception_value, 'section_name': section_name, 'artist_name':artist_name }
+        config.LOGGER.exception(result)
+    config.LOGGER.info("ET /search/artist - result: %s" % (result['result']))
+    return jsonify(result)
+
 
 # updates the title, sort and original title of music albums and videos
 @config.APP.route('/title', methods=['PUT'])
